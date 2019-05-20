@@ -32,7 +32,6 @@ func readData(stream *bufio.ReadWriter)  {
          if line == "" || len(line)==0 {
 			 return
 		 }
-
          if line!= "\n"{
          	fmt.Printf("\x1b[32m%s\x1b[0m>", line)
 		 }
@@ -48,7 +47,7 @@ func writeData(stream *bufio.ReadWriter)  {
       	fmt.Printf("Err reading from the stream %s", err.Error())
       	panic(err)
 	  }
-      _, err  = stream.WriteString(fmt.Sprintf("%s\n", line))
+      _, err  = stream.WriteString(fmt.Sprintf("%s", line))
       if err!=nil {
       	fmt.Printf("Err writing data to stream %s", err.Error())
       	panic(err)
@@ -73,7 +72,7 @@ func main() {
 	}
 	ctx := context.Background()
 
-	addr, _ := multiaddr.NewMultiaddr(fmt.Sprintf("/ipv4/%s/tcp/%d", config.listenHost, config.listenPort))
+	addr, _ := multiaddr.NewMultiaddr(fmt.Sprintf("/ip4/%s/tcp/%d", config.listenHost, config.listenPort))
 
 	host, err := libp2p.New(
 		ctx,
@@ -87,7 +86,7 @@ func main() {
 
 	host.SetStreamHandler(protocol.ID(config.protocolId), handleStream)
 
-	fmt.Printf("\n[*] Your Multiaddress is :/ipv4/%s/tcp/%d/p2p/%s\n",config.listenHost, config.listenPort, host.ID().Pretty())
+	fmt.Printf("\n[*] Your Multiaddress is :/ip4/%s/tcp/%d/p2p/%s\n",config.listenHost, config.listenPort, host.ID().Pretty())
 
 	notifeeChan, err := NewDiscoveryNotifee(ctx, host, config.RendezvousString)
 
@@ -111,8 +110,9 @@ func main() {
 
 	}else {
 		rw := bufio.NewReadWriter(bufio.NewReader(hs), bufio.NewWriter(hs))
-		go readData(rw)
 		go writeData(rw)
+		go readData(rw)
+		fmt.Printf("conn to peer %s\n", peer.ID)
 	}
 
 	select {}

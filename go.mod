@@ -3,6 +3,7 @@ module go-libp2p-examples
 go 1.12
 
 require (
+	github.com/astaxie/beego v1.11.1 // indirect
 	github.com/btcsuite/btcd v0.0.0-20190427004231-96897255fd17 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/jbenet/goprocess v0.1.0 // indirect
